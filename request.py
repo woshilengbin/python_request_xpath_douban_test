@@ -23,39 +23,39 @@ def download_picture(url):
     for item in items:
         # 注意可能只有中文名，没有英文名；可能没有quote简评
         rank, name, alias, rating_num, quote, url = "", "", "", "", "", ""
-        # try:
-        img = item.xpath('./div[@class="pic"]/a/img/@src')[0]
-        url = item.xpath('./div[@class="pic"]/a/@href')[0]
-        rank = item.xpath('./div[@class="pic"]/em/text()')[0]
-        title = item.xpath('./div[@class="info"]//a/span[@class="title"]/text()')
-        name = title[0].encode('gb2312', 'ignore').decode('gb2312')
-        alias = title[1].encode('gb2312', 'ignore').decode('gb2312') if len(title) == 2 else ""
-        rating_num = item.xpath('.//div[@class="bd"]//span[@class="rating_num"]/text()')[0]
-        quote_tag = item.xpath('.//div[@class="bd"]//span[@class="inq"]')
-        if len(quote_tag) is not 0:
-            quote = quote_tag[0].text.encode('gb2312', 'ignore').decode('gb2312').replace('\xa0', '')
-        # 输出 排名，评分，简介，地址，图片
-        print(rank, rating_num, quote, url, img)
-        # 输出 中文名，英文名
-        print(name.encode('gb2312', 'ignore').decode('gb2312'),
-              alias.encode('gb2312', 'ignore').decode('gb2312').replace('/', ','))
-        mkdir('./collection')
-        craeteDir = mkdir('./collection/'+name)
-        if craeteDir:
-            mkdir('./collection/' + name + '/info/')
-            with codecs.open('./collection/' + name + '/info/' + name + '.txt', 'a', 'utf-8') as f:
-                info = name + '  ' + alias + '  ' + "\n" + rank + '  ' + "\n" + quote + "\n" + url + "\n" + img;
-                f.write(info)
-            # 利用urllib.request..urlretrieve正式下载图片
-            a = [rank, rating_num, name]
-            mkdir('./collection/' + name + '/img/')
-            content = './collection/' + name + '/img/第%s位_评分为%s分_%s.jpg' % tuple(a)
-            print(content)
-            urllib.request.urlretrieve(img, content)
+        try:
+            img = item.xpath('./div[@class="pic"]/a/img/@src')[0]
+            url = item.xpath('./div[@class="pic"]/a/@href')[0]
+            rank = item.xpath('./div[@class="pic"]/em/text()')[0]
+            title = item.xpath('./div[@class="info"]//a/span[@class="title"]/text()')
+            name = title[0].encode('gb2312', 'ignore').decode('gb2312')
+            alias = title[1].encode('gb2312', 'ignore').decode('gb2312') if len(title) == 2 else ""
+            rating_num = item.xpath('.//div[@class="bd"]//span[@class="rating_num"]/text()')[0]
+            quote_tag = item.xpath('.//div[@class="bd"]//span[@class="inq"]')
+            if len(quote_tag) is not 0:
+                quote = quote_tag[0].text.encode('gb2312', 'ignore').decode('gb2312').replace('\xa0', '')
+            # 输出 排名，评分，简介，地址，图片
+            print(rank, rating_num, quote, url, img)
+            # 输出 中文名，英文名
+            print(name.encode('gb2312', 'ignore').decode('gb2312'),
+                  alias.encode('gb2312', 'ignore').decode('gb2312').replace('/', ','))
+            mkdir('./collection')
+            craeteDir = mkdir('./collection/' + name)
+            if craeteDir:
+                mkdir('./collection/' + name + '/info/')
+                with codecs.open('./collection/' + name + '/info/' + name + '.txt', 'a', 'utf-8') as f:
+                    info = name + '  ' + alias + '  ' + "\n" + rank + '  ' + "\n" + quote + "\n" + url + "\n" + img;
+                    f.write(info)
+                # 利用urllib.request..urlretrieve正式下载图片
+                a = [rank, rating_num, name]
+                mkdir('./collection/' + name + '/img/')
+                content = './collection/' + name + '/img/第%s位_评分为%s分_%s.jpg' % tuple(a)
+                print(content)
+                urllib.request.urlretrieve(img, content)
 
-    # except:
-    #     print('faild!')
-    #     pass
+        except:
+            print('faild!')
+            pass
 
 
 def mkdir(path):
