@@ -1,0 +1,2 @@
+# python_request_xpath_douban_test
+使用request和xpath对豆瓣页面的爬取与保存，仅仅只是测试，功能还不是很完善
