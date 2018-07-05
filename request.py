@@ -11,7 +11,10 @@ import os
 def download_picture(url):
     print('开始下载图片' + url)
     # 获取网页的源代码
-    req = requests.get(url)
+    headers = {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.87 Safari/537.36'
+    }
+    req = requests.get(url, headers=headers)
 
     # 设置网页编码格式
     req.encoding = 'utf8'
@@ -47,9 +50,8 @@ def download_picture(url):
                     info = name + '  ' + alias + '  ' + "\n" + rank + '  ' + "\n" + quote + "\n" + url + "\n" + img;
                     f.write(info)
                 # 利用urllib.request..urlretrieve正式下载图片
-                a = [rank, rating_num, name]
                 mkdir('./collection/' + name + '/img/')
-                content = './collection/' + name + '/img/第%s位_评分为%s分_%s.jpg' % tuple(a)
+                content = './collection/' + name + '/img/第{}位_评分为{}分_{}.jpg'.format(rank, rating_num, name)
                 print(content)
                 urllib.request.urlretrieve(img, content)
 
@@ -98,4 +100,25 @@ def main():
     print('*' * 50)
 
 
-main()
+def getMovie():
+    url = 'https://movie.douban.com/subject/1292052/'
+    data = requests.get(url).text
+    s = etree.HTML(data)
+    film = s.xpath('//*[@id="content"]/h1/span[1]/text()')
+    director = s.xpath('//*[@id="info"]/span[1]/span[2]/a/text()')
+    screenwriter = s.xpath('//*[@id="info"]/span[2]/span[2]/a/text()')
+    actor = s.xpath('//*[@id="info"]/span[3]/span[2]/a/text()')
+    timeLen = s.xpath('//*[@id="info"]/span[13]/text()')
+    info = s.xpath('//*[@id="link-report"]/span[1]/span/text()[1]')
+    with open('./xiaozhu.txt', 'w', encoding='utf-8') as f:
+        print('电影名称：', film)
+        print('导演：', director)
+        print('编剧：', screenwriter)
+        print('主演：', actor)
+        print('片长：', timeLen)
+        print('简介：', info[0].strip())
+        f.write("{},{},{},{}\n".format(film[0], timeLen[0], director[0], info[0].strip()))
+
+
+# main()
+getMovie()
